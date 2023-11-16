@@ -5,7 +5,7 @@ WORKDIR /app
 COPY server.py /app
 COPY requirements.txt /app
 
-VOLUME /app/.env
+#VOLUME /app/.env
 
 RUN pip install --no-cache-dir -r requirements.txt
 
