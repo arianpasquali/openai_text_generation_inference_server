@@ -42,7 +42,10 @@ class RequestBody(BaseModel):
     parameters: Optional[dict]
 
 async def get_openai_stream_data(request):
-    events = await openai.ChatCompletion.acreate(
+    
+    client = openai.AsyncOpenAI(api_key=os.environ['OPENAI_API_KEY'])
+
+    events = await client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": request.inputs}],
         stream=True,
@@ -56,10 +59,10 @@ async def get_openai_stream_data(request):
     async for event in events:
         #print(event)
         try:      
-            content = event['choices'][0]['delta']['content']
+            content = event.choices[0].delta.content
         except KeyError:
             content = None
-        finish_reason = event['choices'][0]['finish_reason']
+        finish_reason = event.choices[0].finish_reason
         tok_cnt += 1
         if content or finish_reason != None:
             if content:
